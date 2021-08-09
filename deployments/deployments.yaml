@@ -5,10 +5,12 @@ metadata:
   labels:
     app: myapp
 spec:
+  #necesita que se vuelva a redesplegar
+  revisionHistoryLimit: 1 #Numero de Rs que puede tener el historial, borra el historial de rs en un deploy
   selector:
     matchLabels:
       app: myapp
-  replicas: 3
+  replicas: 6
   template: 
     metadata:
       name: nginx-2
