@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  name: myapp-service
+spec:
+  type: NodePort
+  ports:
+   - targetPort: 80 #el puerto que expone el contenedor en caso de no declarar un puerto este toma el mismo del port
+     port: 80 #puerto de comunicacion entre el svc y el pod, este valor es obligatorio
+     nodePort: 30008 #puerto para exponer en el node, en caso de no declarar k8s proporcionara uno del rango diponible 30000 32767
+  selector:
+     app: myapp  
+  
