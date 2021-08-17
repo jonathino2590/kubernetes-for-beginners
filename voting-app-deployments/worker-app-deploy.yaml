@@ -20,6 +20,10 @@ spec:
     spec:
       containers:
         - name: worker-app
-          image: kodekloud/examplevotingapp_worker:v1
+          image: danukaw/worker-app
+          #How to debug a Kubernetes pod in CrashloopBackOff
+          command: ["/bin/sh"]
+          args: ["-c", "while true; do echo hello; sleep 10;done"]  
+          #        
           ports:
             - containerPort: 80   
