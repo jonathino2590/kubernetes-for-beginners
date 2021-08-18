@@ -21,6 +21,7 @@ spec:
       containers:
         - name: worker-app
           image: danukaw/worker-app
+          #image: kodekloud/examplevotingapp_worker:v1
           #How to debug a Kubernetes pod in CrashloopBackOff
           command: ["/bin/sh"]
           args: ["-c", "while true; do echo hello; sleep 10;done"]  

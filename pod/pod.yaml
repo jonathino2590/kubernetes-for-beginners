@@ -4,6 +4,7 @@ metadata:
   name: podnginx2
   labels:
     app: dev
+    tier: frontend
 spec:
   containers:
   - name: cont1
