@@ -9,5 +9,6 @@ spec:
      port: 80 #puerto de comunicacion entre el svc y el pod, este valor es obligatorio
      protocol: TCP # por defect es TCP pero puede ser supported values: "SCTP", "TCP", "UDP"
   selector:
-     app: myapp  
+    app: myapp  
+    tier: frontend     
   
