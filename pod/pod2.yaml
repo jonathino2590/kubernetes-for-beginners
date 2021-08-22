@@ -4,13 +4,13 @@ metadata:
   name: nginx-2
   labels:
     app: myapp
-    tier: frontend
 spec:
   containers:
     - name: nginx 
-      image: nginx
+      image: nginx:1.18
       imagePullPolicy: IfNotPresent
       ports:
         - name: http
           containerPort: 80
           protocol: TCP
+  nodeName: #Campo que te indica en que Node deseas enviar un pod

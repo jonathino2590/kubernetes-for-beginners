@@ -1,5 +1,76 @@
 * Common
+kubectl get pods --all-namespaces -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
+#recursivida en archivos 
+k apply -R path/
+k describe -f file.yaml
+k diff -f path
+k top pod --use-protocol-buffers #ver las metricas de CPy y MEMORY 
+k top nodes --use-protocol-buffers #ver las metricas de CPy y MEMORY
+watch "kubectl top pod --use-protocol-buffers" 
+k logs -f name-pod name-container # ver los registros de un pod cuando se tiene mas de un contenedor se coloca el nombre del mismo 
+k logs -f name-pod -c name-container # ver los registros de un pod
+k get pods -n kube-system #pod del system de k8s
+
+* Deployments 
+Almacena una notacion de apply
+kubectl create deploy nginx --image=nginx -r=3  --dry-run=client --save-config --show-managed-fields -o yaml
+
+kubectl create deployment --image=nginx nginx
+# deployment con replicas
+kubectl create deployment nginx --image=nginx --replicas=4
+kubectl create deployment nginx --image=nginx -r=4
 
 * Pods
+kubectl run NAME --image=image [--env="key=value"] [--port=port] [--dry-run=server|client] [--overrides=inline-json] [--command] -- [COMMAND] [args...]
+Crear un pod NGINX
+kubectl run nginx --image=nginx
+
+crear un pods con labels 
+k run redis --image=redis:alpine --labels="tier=db" --dry-run=client -o yaml
+
+Genere el archivo YAML de manifiesto POD (-o yaml). No lo cree (–secar-ejecutar)
+kubectl run nginx --image=nginx --dry-run=client -o yaml
+
+crear un pod y exponerlo (crea un pod y service )
+kubectl run httpd --image=httpd:alpine --port 80 --expose --dry-run=client -o yaml
+
+#editar un pod en ejecucion 
+k edit pod name-pod 
+esto genera un archivo en /tmp
+k replace -f /tmp/kubectl-edit-xxx.yaml --force 
+
+#scalar
+k scale deploy nginx -r=5
+k scale deployment nginx --rreplicas=5
+
+#actualizar una imagen
+k set image deployment nginx nginx=nginx:1.18
 
 * Svc
+#exponer un servicio Node port
+kubectl create service nodeport nginx --tcp=80:80 --node-port=30080 --dry-run=client -o yaml # tcp = port:targetPort
+kubectl expose deployment name-deploy --name=webapp-service --target-port=8080 --type=NodePort --port=8080 --dry-run=client -o yaml > sv.yaml
+
+Cree un servicio llamado redis-service de tipo ClusterIP para exponer pod redis en el puerto 6379
+kubectl expose pod redis --port=6379 --name redis-service --dry-run=client -o yaml (Esto usará automáticamente las etiquetas del pod como selectores)
+kubectl expose pod redis --port 6379 --name redis-service --dry-run=client -o yaml
+O
+kubectl create service clusterip redis --tcp=6379:6379 --dry-run=client -o yaml 
+(Esto no utilizará las etiquetas de los pods como selectores, sino que asumirá los selectores como app = redis.
+ No puede pasar los selectores como una opción. Por lo tanto, no funciona muy bien si su pod tiene un conjunto de etiquetas diferente. 
+ Por lo tanto, genere el archivo y modificar los selectores antes de crear el servicio)
+
+
+ * HPA 
+ kubectl hpa (-f FILENAME | TYPE NAME | TYPE/NAME) [--min=MINPODS] --max=MAXPODS [--cpu-percent=CPU]
+
+ kubectl autoscale deployment nginx --min=2 --max=10 --cpu-percent=80
+ kubectl hpa deployment nginx --min=2 --max=10 --cpu-percent=80
+
+*hablitar addons minikube 
+minikube addons enable ingress 
+minikube addons enable metrics-server #otras git clone git clone https://github.com/kodekloudhub/kubernetes-metrics-server.git https://github.com/kubernetes-incubator/metrics-server.git
+
+*Binding 
+curl --header "Content-Type:application/json" --request POST --data 'JSON DEL BINDING'
+http://$SERVER/api/v1/namespaces/default/pods/$PODNAME/binding/
