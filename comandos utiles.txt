@@ -10,6 +10,8 @@ watch "kubectl top pod --use-protocol-buffers"
 k logs -f name-pod name-container # ver los registros de un pod cuando se tiene mas de un contenedor se coloca el nombre del mismo 
 k logs -f name-pod -c name-container # ver los registros de un pod
 k get pods -n kube-system #pod del system de k8s
+k get pods -l app=myapp --no-headers  #seleccionar con etiquetas sin cabecera
+k get pods -l app=myapp,env=prod --no-headers  #seleccionar con etiquetas sin cabecera
 
 * Deployments 
 Almacena una notacion de apply
