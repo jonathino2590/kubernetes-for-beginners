@@ -1,5 +1,6 @@
 * Common
 kubectl get pods --all-namespaces -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
+kubectl get componentstatuses
 #recursivida en archivos 
 k apply -R path/
 k describe -f file.yaml
@@ -21,6 +22,8 @@ kubectl create deployment --image=nginx nginx
 # deployment con replicas
 kubectl create deployment nginx --image=nginx --replicas=4
 kubectl create deployment nginx --image=nginx -r=4
+
+k delete deploy --all #borrar todos los deploy 
 
 * Pods
 kubectl run NAME --image=image [--env="key=value"] [--port=port] [--dry-run=server|client] [--overrides=inline-json] [--command] -- [COMMAND] [args...]
@@ -76,3 +79,35 @@ minikube addons enable metrics-server #otras git clone git clone https://github.
 *Binding 
 curl --header "Content-Type:application/json" --request POST --data 'JSON DEL BINDING'
 http://$SERVER/api/v1/namespaces/default/pods/$PODNAME/binding/
+
+Taints & Telerations
+
+ # taint-effect 
+ #NoSchedule / No se programara 
+ #PreferNoSchedule / No se colocara ninguna pieza en ese nodo no esta garantizado 
+ #NoExecute / no se ejecutara
+ #k taint nodes node-name key=value:taint-effect
+ #agregar
+ kubectl taint nodes minikube app=blue:NoSchedule
+ #delete
+ kubectl taint nodes minikube app-
+
+
+
+JSON PATH 
+
+
+formats are: custom-columns,custom-columns-file,go-template,go-template-file,json,jsonpath,jsonpath-as-json,jsonpath-file,name,template,templatefile,wide,yaml
+k get pods -n kube-system -o=jsonpath='{.items[*].metadata.name}{"\n"}{.items[*].metadata.labels}'
+k get pods -n kube-system -o=jsonpath='{.items[0].spec.containers[*].image}'
+k get pods -o=custom-columns=POD:.metadata.name,CPU:status.capacity
+k get pods,svc -o=custom-columns=POD:.metadata.name
+k get nodes --sort-by= .metadata.name
+kubectl get -o template pod myapp-pod --template={{.status.phase}}
+k get pods -n kube-system -o=jsonpath='{.items[*].metadata.name} {"\t"} {.items[*].spec.containers[*].image}'
+
+loops
+k get pods -n kube-system -o=jsonpath='{.items[*].metadata.name} {"\n"} {.items[*].spec.containers[*].image}'
+k get pods -n kube-system -o=jsonpath='{range .items[*]} {.metadata.name}{"\t"}{.spec.containers[*].image}{"\t"}{end}'
+
+$.status.containerStatuses[?(@.name == 'redis-container')].restartCount

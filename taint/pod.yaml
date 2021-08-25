@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: red
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+#asignacion de un nodo con Taint
+  tolerations:
+    - key: "app"
+      operator: "Equal"
+      effect: "NoExecute"
+      #tolerationSeconds: 10 # solo este campo se puede modificar
+      value: "blue"
+ 
