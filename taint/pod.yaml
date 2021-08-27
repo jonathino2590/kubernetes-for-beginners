@@ -11,8 +11,8 @@ spec:
 #asignacion de un nodo con Taint
   tolerations:
     - key: "app"
-      operator: "Equal"
-      effect: "NoExecute"
+      operator: "Equal" #equal o Exists
+      effect: "NoExecute" #supported values: "NoSchedule", "PreferNoSchedule", "NoExecute"
       #tolerationSeconds: 10 # solo este campo se puede modificar
       value: "blue"
  

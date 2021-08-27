@@ -14,6 +14,10 @@ k get pods -n kube-system #pod del system de k8s
 k get pods -l app=myapp --no-headers  #seleccionar con etiquetas sin cabecera
 k get pods -l app=myapp,env=prod --no-headers  #seleccionar con etiquetas sin cabecera
 
+#pod updates may not change fields other than `spec.containers[*].image`, `spec.initContainers[*].image`, `spec.activeDeadlineSeconds` or `spec.tolerations` (only additions to existing tolerations)
+
+k explain pod --recursive | grep -A5 tolerations
+
 * Deployments 
 Almacena una notacion de apply
 kubectl create deploy nginx --image=nginx -r=3  --dry-run=client --save-config --show-managed-fields -o yaml
@@ -24,6 +28,10 @@ kubectl create deployment nginx --image=nginx --replicas=4
 kubectl create deployment nginx --image=nginx -r=4
 
 k delete deploy --all #borrar todos los deploy 
+
+para eliminacion de deploy 
+
+k delete deploy demo-nginx --grace-period=0 --force
 
 * Pods
 kubectl run NAME --image=image [--env="key=value"] [--port=port] [--dry-run=server|client] [--overrides=inline-json] [--command] -- [COMMAND] [args...]
@@ -43,6 +51,9 @@ kubectl run httpd --image=httpd:alpine --port 80 --expose --dry-run=client -o ya
 k edit pod name-pod 
 esto genera un archivo en /tmp
 k replace -f /tmp/kubectl-edit-xxx.yaml --force 
+
+O
+eliminar el pod y luego hacer el create o apply , otra manera es editar el kubectl get pod webapp -o yaml > my-new-pod.yaml el archivo y asi aplicarlo 
 
 #scalar
 k scale deploy nginx -r=5
@@ -111,3 +122,66 @@ k get pods -n kube-system -o=jsonpath='{.items[*].metadata.name} {"\n"} {.items[
 k get pods -n kube-system -o=jsonpath='{range .items[*]} {.metadata.name}{"\t"}{.spec.containers[*].image}{"\t"}{end}'
 
 $.status.containerStatuses[?(@.name == 'redis-container')].restartCount
+
+
+
+stress de pod 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2021-08-26T04:32:48Z"
+  name: elephant
+  namespace: default
+  resourceVersion: "1711"
+  uid: f29b5949-3bd3-451d-9a95-c06759ea9851
+spec:
+  containers:
+  - args:
+    - --vm
+    - "1"
+    - --vm-bytes
+    - 15M
+    - --vm-hang
+    - "1"
+    command:
+    - stress
+    image: polinux/stress
+    imagePullPolicy: Always
+    name: mem-stress
+    resources:
+      limits:
+        memory: 20Mi
+      requests:
+        memory: 5Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-wtn9f
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: controlplane
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: default-token-wtn9f
+    secret:
+      defaultMode: 420
+      secretName: default-token-wtn9f
