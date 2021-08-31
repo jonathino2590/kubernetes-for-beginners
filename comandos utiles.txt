@@ -14,6 +14,13 @@ k get pods -n kube-system #pod del system de k8s
 k get pods -l app=myapp --no-headers  #seleccionar con etiquetas sin cabecera
 k get pods -l app=myapp,env=prod --no-headers  #seleccionar con etiquetas sin cabecera
 
+
+for i in {1..35}; do
+   kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/info 2>&1` && echo "$test OK" || echo "Failed"';
+   echo ""
+done
+
+
 #pod updates may not change fields other than `spec.containers[*].image`, `spec.initContainers[*].image`, `spec.activeDeadlineSeconds` or `spec.tolerations` (only additions to existing tolerations)
 
 k explain pod --recursive | grep -A5 tolerations
@@ -191,3 +198,24 @@ spec:
     secret:
       defaultMode: 420
       secretName: default-token-wtn9f
+
+
+*ConfigMaps
+k create configmap app-config --from-literal=APP_COLOR=blue --from-literal=APP_MOD=prod
+k create configmap app-config --from-file=<path-to-file> # esto se crea con el nombre del archivo la data
+
+archivo.yaml
+APP_COLOR: blue
+APP_MODE: prod
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+data:
+  configmaps-file.yaml: |
+    APP_COLOR: blue
+    APP_MODE: prod
+

@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-2
+  labels:
+    app: myapp
+spec:
+  #schedulerName: my-scheduler ##scheduler personalizado
+  volumes:
+    - name: app-config-volume
+      configMap:
+        name: app-config ## montar un CM como volumen
+  containers:
+    - name: nginx 
+      image: nginx:1.18
+      command: ["sleep2.0","1200"] #se envia los argumentos en el EntryPoint de DockerFile y anula el mismo en Docker
+      command:
+        - "sleep2.0"
+        - "1200"
+      arg: ["10"] #se envia los argumentos al CMD del contenedor y anula CMD de DockerFile
+      imagePullPolicy: IfNotPresent
+      ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+      env:
+        - name: APP_COLOR # como variable 
+          value: pink
+        - name: APP_COLOR ## como variable de entorno en CM
+          valueFrom:
+            configMapKeyRef:
+              key: app-config
+              name: APP_COLOR
+      envFrom: # como archivo de CM
+        - configMapRef:
+            name: app-config
+      
+  nodeName: #Campo que te indica en que Node deseas enviar un pod
