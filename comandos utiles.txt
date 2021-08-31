@@ -62,6 +62,12 @@ k scale deployment nginx --rreplicas=5
 #actualizar una imagen
 k set image deployment nginx nginx=nginx:1.18
 
+pod estaticos 
+crearalo en la carpeta /etc/kubernetes/manifiest o verificar la ruta en el kubelet.service o /var/lib/kubelet/config.yaml 
+lo podemos ver con el comando systemctl status kubelet 
+
+k run static-busybox --image=busybox --command spleep 1000  --dry-run=client
+
 * Svc
 #exponer un servicio Node port
 kubectl create service nodeport nginx --tcp=80:80 --node-port=30080 --dry-run=client -o yaml # tcp = port:targetPort
