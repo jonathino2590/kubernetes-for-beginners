@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-2
+  labels:
+    app: myapp
+spec:
+  containers: # comparten red y espacio
+    - name: nginx 
+      image: nginx:1.18
+      imagePullPolicy: IfNotPresent
+      ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+    - name: log-agent 
+      image: log-agent
+      imagePullPolicy: IfNotPresent
+      ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+
+       
