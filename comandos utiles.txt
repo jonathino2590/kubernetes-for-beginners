@@ -240,3 +240,13 @@ k create secret generic app-secret --from-env-file=path/to/bar.env
 k create secret generic app-secret --from-file=<path-to-file> # esto se crea con el nombre del archivo la data
 echo -n palabra | base64
 echo -n palabra | base64 --decode
+
+
+--kube-controller-manager
+-pod-eviction-timeout=5m0S #tiempo que espera el master a que un nodo este en linea antes de declararlo muerto
+
+#drenar un nodo
+k cordon node-1 #coloca al nodo como no programable 
+k drain node-1 # drenas los pods de ese nodo a otros nodos --ignore-daemonsets para ignorar varios daemon
+# solo drena los rs, rs ,ds ss, job si algo q no forma parte de estos kind debe usar --force
+k uncordon node-1 #coloca el nodo como programable
