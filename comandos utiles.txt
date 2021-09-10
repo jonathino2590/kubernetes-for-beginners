@@ -424,3 +424,10 @@ Image:         k8s.gcr.io/etcd:3.4.13-0
 
 #cerificado
 kubectl -n kube-system describe pod etcd-controlplane | grep '\--cert-file'
+
+******redis cluster**********
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+helm pull bitnami/redis-cluster --untar
+
+helm install redis-cluster-master redis-cluster --set service.name=jonathan-redis --dry-run > redis-cluster/redis-cluster4.yaml
