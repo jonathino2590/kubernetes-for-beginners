@@ -431,3 +431,48 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm pull bitnami/redis-cluster --untar
 
 helm install redis-cluster-master redis-cluster --set service.name=jonathan-redis --dry-run > redis-cluster/redis-cluster4.yaml
+
+
+********ca
+#Generate Keys
+openssl genrsa -out ca.key 2048
+
+#certificate signing request
+openssl req -new -key ca.key -subj "/CN=KEBERNETES-CA" -out ca.csr|
+
+#Sign Certificates
+openssl x509 -req in ca.csr -sigkey ca.key -out ca.crt
+
+#Certificates Client
+
+#Generate Keys
+openssl genrsa -out admin.key 2048
+
+#certificate signing request
+openssl req -new -key admin.key -subj "/CN=kube-admin/O=system:masters" -out admin.csr
+
+#Sign Certificates
+openssl x509 -req in admin.csr -CA ca.crt -CAkey ca.key -out admin.crt
+
+para utilizar los certificados 
+
+curl https:/kube-apiserver:8443/api/v1/pods --key admin.key --cert admin.crt --cacert ca.crt
+
+config de .kube/config
+
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /home/jlopezt/.minikube/ca.crt
+    server: https://192.168.49.2:8443
+  name: minikube
+kind: Config
+users:
+- name: minikube
+  user:
+    client-certificate: /home/jlopezt/.minikube/profiles/minikube/client.crt
+    client-key: /home/jlopezt/.minikube/profiles/minikube/client.key
+
+
+
+
