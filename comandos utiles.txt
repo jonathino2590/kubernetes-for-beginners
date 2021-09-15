@@ -438,10 +438,11 @@ helm install redis-cluster-master redis-cluster --set service.name=jonathan-redi
 openssl genrsa -out ca.key 2048
 
 #certificate signing request
-openssl req -new -key ca.key -subj "/CN=KEBERNETES-CA" -out ca.csr|
+openssl req -new -key ca.key -subj "/CN=KEBERNETES-CA" -out ca.csr
 
 #Sign Certificates
 openssl x509 -req in ca.csr -sigkey ca.key -out ca.crt
+
 
 #Certificates Client
 
@@ -474,5 +475,10 @@ users:
     client-key: /home/jlopezt/.minikube/profiles/minikube/client.key
 
 
+Certificados de nodes
+group SYSTEM:NODES
 
+sytem:node:node01
 
+#ver info del certificado 
+openssl x509 -in /var/lib/minikube/certs/apiserver.crt -text -noout

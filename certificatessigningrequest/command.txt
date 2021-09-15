@@ -1,0 +1,24 @@
+# el usuario primero crea la llave y el certificado
+openssl genrsa -out jane.key 2048
+
+openssl req -new -key jane.key -subj "/CN=jane" -out jane.csr
+
+cat jane.csr | base64 #este resultado va a request del manifiesto 
+
+# Encoding the .csr file in base64
+$ export BASE64_CSR=$(cat ./dave.csr | base64 | tr -d '\n')
+# Substitution of the BASE64_CSR env variable and creation of the CertificateSigninRequest resource
+$ cat csr.yaml | envsubst | kubectl apply -f -
+
+
+para validar los certificados 
+kubectl get csr 
+#aprobar
+kubectl certificate approve jane
+
+#niego 
+kubectl certificate deny jane 
+
+kubectl get csr jane -o jsonpath='{.status.certificate}' | base64 --decode > jane.crt
+
+openssl x509 -in ./jane.crt -noout -text
