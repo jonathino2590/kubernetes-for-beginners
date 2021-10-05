@@ -474,6 +474,40 @@ users:
     client-certificate: /home/jlopezt/.minikube/profiles/minikube/client.crt
     client-key: /home/jlopezt/.minikube/profiles/minikube/client.key
 
+ejemplo de .kube/config
+
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    server: https://api.din-ros-can-dev.9gqx.p1.openshiftapps.com:6443
+  name: api-din-ros-can-dev-9gqx-p1-openshiftapps-com:6443
+contexts:
+- context:
+    cluster: api-din-ros-can-dev-9gqx-p1-openshiftapps-com:6443
+    namespace: cyberbank-dev
+    user: system:serviceaccount:cyberbank-digital-dev:jenkins-sa
+  name: cyberbank-dev/api-din-ros-can-dev-9gqx-p1-openshiftapps-com:6443/system:serviceaccount:cyberbank-digital-dev:jenkins-sa
+- context:
+    cluster: api-din-ros-can-dev-9gqx-p1-openshiftapps-com:6443
+    namespace: cyberbank-digital-dev
+    user: system:serviceaccount:cyberbank-digital-dev:jenkins-sa
+  name: cyberbank-digital-dev/api-din-ros-can-dev-9gqx-p1-openshiftapps-com:6443/system:serviceaccount:cyberbank-digital-dev:jenkins-sa
+- context:
+    cluster: api-din-ros-can-dev-9gqx-p1-openshiftapps-com:6443
+    namespace: cyberbank-preprod
+    user: system:serviceaccount:cyberbank-preprod:jenkins-sa
+  name: cyberbank-preprod/api-din-ros-can-dev-9gqx-p1-openshiftapps-com:6443/system:serviceaccount:cyberbank-preprod:jenkins-sa
+current-context: cyberbank-digital-dev/api-din-ros-can-dev-9gqx-p1-openshiftapps-com:6443/system:serviceaccount:cyberbank-digital-dev:jenkins-sa
+preferences: {}
+users:
+- name: system:serviceaccount:cyberbank-digital-dev:jenkins-sa
+  user:
+    token: eyJhbGciOiJSUzI1NiIsImtpZCI6IkNIYV9YUWx4UG9icEhiOVlQNlpjVkxLVHVEYWhMXzE2c2JJN1RNQXIwTEEifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJjeWJlcmJhbmstZGlnaXRhbC1kZXYiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiamVua2lucy1zYS10b2tlbi0ybW1iZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJqZW5raW5zLXNhIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMzU4YTEzYTYtMjUwMC00NTQ4LTg4ZDctNjY4Nzc1NDM2NGFlIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmN5YmVyYmFuay1kaWdpdGFsLWRldjpqZW5raW5zLXNhIn0.CTRmynWL7TZekMI_z2SKGkrSU-YDPZlImVI1XcMhswSKiyHV0nvMBYVAzZibt8n_va5yP9hb0x3suvd8dcuCiWfX-C3D9u9upTf8cXH5SrklpIIJDRzbT66LAa36o6342WWtLe1E0Qi62ODmXt5KMAVMHzqLpRsQSN9JpanLnR6qCqmJe0P5U-Tt0y9_jMT8bH3lNdJidcth7ycwXal8iqbKDuQRvkhRbtXtsh0oAy1coY1Q3a5kiT0Z88xRvpY14WiI98_PXUJJIDxxEQY_Ei7by20koFafyJUAZMfYVVAyxDnXtyMlJYwOGfYbgHplE_rSni44La198N7TLCZXSg
+- name: system:serviceaccount:cyberbank-preprod:jenkins-sa
+  user:
+    token: eyJhbGciOiJSUzI1NiIsImtpZCI6IkNIYV9YUWx4UG9icEhiOVlQNlpjVkxLVHVEYWhMXzE2c2JJN1RNQXIwTEEifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJjeWJlcmJhbmstcHJlcHJvZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJqZW5raW5zLXNhLXRva2VuLXBucm44Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImplbmtpbnMtc2EiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJkNzdmZWE4Ny0yOTU3LTQ3ODUtYTNjMi0zYjU0OWUzMzRiZmMiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6Y3liZXJiYW5rLXByZXByb2Q6amVua2lucy1zYSJ9.L3UGrAvbC6mGRzst0luuWM-aT5uBeBYVS3mhYk1_gODVj4gUaOQyqzxCchS5hbcx1HOR_bc5TBJFJQsFZkROJ3oYgoIKd3g8mpG4gZP6ihKnt-KHuTHHe34FrPupE2zubSPFpXX00OQvtqmpBnIH597ttlY2LhVbDkxei4X0_bhbHCm0r90GxCT-ed4huVxKjCEV5hDdHPSbyUHlI8160NJifS71PDd3DuF_NLlJXNOofFdj3TAR2yx-HgU54G5FeKh61Uu5Zj6SqHjyzmDbGjRkIGs88LTaluO9BRevdF2-EdfbopsuPNfaIt1W9wpbrzCpgaqb8sR6o3v_6GMYag
+
 
 Certificados de nodes
 group SYSTEM:NODES
@@ -483,7 +517,10 @@ sytem:node:node01
 #ver info del certificado 
 openssl x509 -in /var/lib/minikube/certs/apiserver.crt -text -noout
 
+acceder al api de minikube 
+curl https://192.168.49.2:8443/api/v1/pods/ --key /home/jlopezt/.minikube/profiles/minikube/client.key --cert /home/jlopezt/.minikube/profiles/minikube/client.crt  --cacert /home/jlopezt/.minikube/ca.crt
 
 #pod que han sido ejecutado mas de N horas 
 
 kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}} {{.metadata.creationTimestamp}}{{"\n"}}{{end}}' | awk '$2 <= "'$(date -d'now-5 hours' -Ins --utc | sed 's/+0000/Z/')'" { print $1 }' | xargs --no-run-if-empty kubectl delete pod;
+

@@ -1,24 +1,55 @@
-# el usuario primero crea la llave y el certificado
-openssl genrsa -out jane.key 2048
+Manual 
+Create KEY
+openssl genrsa -out 60099.key 2048
+2. Create CSR
+openssl req -new -key 60099.key -out 60099.csr
+# set Common Name = 60099@internal.users
+3. Manual signing
+find /etc/kubernetes/pki | grep ca
+openssl x509 -req -in 60099.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out 60099.crt -days 500
 
-openssl req -new -key jane.key -subj "/CN=jane" -out jane.csr
-
-cat jane.csr | base64 #este resultado va a request del manifiesto 
+Signing via API
+https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests
 
 # Encoding the .csr file in base64
-$ export BASE64_CSR=$(cat ./dave.csr | base64 | tr -d '\n')
-# Substitution of the BASE64_CSR env variable and creation of the CertificateSigninRequest resource
+$ export BASE_64_ENCODED_CSR=$(cat ./jonathan.csr | base64 | tr -d '\n')
+# Substitution of the BASE_64_ENCODED_CSR env variable and creation of the CertificateSigninRequest resource
 $ cat csr.yaml | envsubst | kubectl apply -f -
 
+
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: 60099@internal.users # ADD
+spec:
+  groups:
+  - system:authenticated
+  request: {{BASE_64_ENCODED_CSR}} # ADD
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+
+Convert CSR file content to base64:
+cat 60099.csr | base64 -w 0
+
+Create the resource, check its status and approve:
+k -f csr.yaml create
+k certificate approve 60099@internal.users
+
+Now download the CRT:
+k get csr 60099@internal.users -ojsonpath="{.status.certificate}" | base64 -d > 60099.crt
+5. Use it to connect to K8s API
+k config set-credentials 60099@internal.users --client-key=60099.key --client-certificate=60099.crt
+k config set-context 60099@internal.users --cluster=kubernetes --user=60099@internal.users
+k config get-contexts
+k config use-context 60099@internal.users
 
 para validar los certificados 
 kubectl get csr 
 #aprobar
-kubectl certificate approve jane
+kubectl certificate approve jonathan
 
 #niego 
-kubectl certificate deny jane 
+kubectl certificate deny jonathan 
 
-kubectl get csr jane -o jsonpath='{.status.certificate}' | base64 --decode > jane.crt
-
-openssl x509 -in ./jane.crt -noout -text
+openssl x509 -in ./jonathan.crt -noout -text
