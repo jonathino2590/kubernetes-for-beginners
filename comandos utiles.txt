@@ -482,3 +482,8 @@ sytem:node:node01
 
 #ver info del certificado 
 openssl x509 -in /var/lib/minikube/certs/apiserver.crt -text -noout
+
+
+#pod que han sido ejecutado mas de N horas 
+
+kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}} {{.metadata.creationTimestamp}}{{"\n"}}{{end}}' | awk '$2 <= "'$(date -d'now-5 hours' -Ins --utc | sed 's/+0000/Z/')'" { print $1 }' | xargs --no-run-if-empty kubectl delete pod;
