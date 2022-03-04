@@ -25,7 +25,7 @@ done
 
 k explain pod --recursive | grep -A5 tolerations
 
-k version --short #version mas corta
+k version --short #version Jonathan
 
 
 * Deployments 
